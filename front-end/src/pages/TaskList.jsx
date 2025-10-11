@@ -15,6 +15,15 @@ const TaskList = () => {
   useEffect(() => {
     getData();
   }, []);
+
+  const handleDelete = async (id) => {
+    const result = await axios.delete(
+      `http://localhost:3400/delete-task/${id}`
+    );
+    if (result) {
+      getData();
+    }
+  };
   return (
     <>
       <h1 className="text-3xl max-md:text-2xl font-extrabold text-center text-gray-800 mt-10 mb-8">
@@ -63,7 +72,10 @@ const TaskList = () => {
                           <Pencil size={18} />
                         </button>
                         <button className="p-2 rounded-full hover:bg-red-100 text-red-600 transition">
-                          <Trash2 size={18} />
+                          <Trash2
+                            size={18}
+                            onClick={() => handleDelete(item._id)}
+                          />
                         </button>
                       </div>
                     </td>

@@ -29,4 +29,15 @@ app.post("/add-task", async (req, res) => {
   }
 });
 
+app.delete("/delete-task/:id", async (req, res) => {
+  const id = req.params.id;
+  try {
+    const result = await taskModel.findByIdAndDelete(id);
+    res.status(200).json(result);
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
 app.listen(3400);
