@@ -1,6 +1,89 @@
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { Pencil, Trash2 } from "lucide-react";
+
 const TaskList = () => {
+  const [loading, setLoading] = useState(false);
+  const [details, setDetails] = useState([]);
+  const getData = async () => {
+    setLoading(true);
+    const result = await axios.get("http://localhost:3400/");
+    console.log(result);
+    setDetails(result.data);
+    setLoading(false);
+  };
+  useEffect(() => {
+    getData();
+  }, []);
   return (
-    <div>TaskList</div>
-  )
-}
-export default TaskList
+    <>
+      <h1 className="text-3xl max-md:text-2xl font-extrabold text-center text-gray-800 mt-10 mb-8">
+        To-Do List
+      </h1>
+      <div className="flex justify-center items-center px-4 pb-12">
+        <div className="w-full max-w-5xl overflow-x-auto bg-white text-center rounded-2xl shadow-xl border border-gray-100">
+          <table className="w-full text-left border-collapse">
+            <thead>
+              <tr className="bg-gradient-to-r from-gray-100 to-gray-200 text-gray-700 text-sm uppercase tracking-wide">
+                <th className="p-4 border-b rounded-tl-2xl">S.No.</th>
+                <th className="p-4 border-b">Title</th>
+                <th className="p-4 border-b">Description</th>
+                <th className="p-4 border-b rounded-tr-2xl text-center">
+                  Actions
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {loading ? (
+                <tr>
+                  <td
+                    colSpan="6"
+                    className="text-center p-8 text-gray-500 italic"
+                  >
+                    Loading...
+                  </td>
+                </tr>
+              ) : details.length > 0 ? (
+                details.map((item, index) => (
+                  <tr
+                    key={index}
+                    className={`${
+                      index % 2 === 0 ? "bg-white" : "bg-gray-50"
+                    } hover:bg-gray-100 transition`}
+                  >
+                    <td className="hidden">{item._id}</td>
+                    <td className="p-4 border-b text-gray-600">{index + 1}</td>
+                    <td className="p-4 border-b font-medium text-gray-800">
+                      {item.title}
+                    </td>
+                    <td className="p-4 border-b text-gray-600">{item.desc}</td>
+                    <td className="p-4 border-b text-center">
+                      <div className="flex justify-center gap-2">
+                        <button className="p-2 rounded-full hover:bg-blue-100 text-blue-600 transition">
+                          <Pencil size={18} />
+                        </button>
+                        <button className="p-2 rounded-full hover:bg-red-100 text-red-600 transition">
+                          <Trash2 size={18} />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td
+                    colSpan="6"
+                    className="text-center p-8 text-gray-500 italic"
+                  >
+                    No tasks available
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </>
+  );
+};
+export default TaskList;
