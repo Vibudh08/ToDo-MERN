@@ -1,13 +1,20 @@
-import { useState } from 'react'
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import NavBar from "./components/NavBar";
+import TaskList from "./pages/TaskList";
+import AddTask from "./pages/AddTask";
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
     <>
-      <h1 class="text-3xl font-bold underline text-orange-500">Hello world!</h1>
+      <BrowserRouter>
+        <NavBar />
+        <Routes>
+          <Route path="/" element={<TaskList />} />
+          <Route path="/add-task" element={<AddTask />} />
+        </Routes>
+      </BrowserRouter>
     </>
   );
 }
 
-export default App
+export default App;
