@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Pencil, Trash2 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const TaskList = () => {
   const [loading, setLoading] = useState(false);
   const [details, setDetails] = useState([]);
+  const navigate = useNavigate();
+
   const getData = async () => {
     setLoading(true);
     const result = await axios.get("http://localhost:3400/");
@@ -24,6 +27,7 @@ const TaskList = () => {
       getData();
     }
   };
+
   return (
     <>
       <h1 className="text-3xl max-md:text-2xl font-extrabold text-center text-gray-800 mt-10 mb-8">
@@ -69,7 +73,10 @@ const TaskList = () => {
                     <td className="p-4 border-b text-center">
                       <div className="flex justify-center gap-2">
                         <button className="p-2 rounded-full hover:bg-blue-100 text-blue-600 transition">
-                          <Pencil size={18} />
+                          <Pencil
+                            size={18}
+                            onClick={() => navigate(`/edit-task/${item._id}`)}
+                          />
                         </button>
                         <button className="p-2 rounded-full hover:bg-red-100 text-red-600 transition">
                           <Trash2
