@@ -48,6 +48,20 @@ app.delete("/delete-task/:id", async (req, res) => {
   }
 });
 
+// Delete task
+app.delete("/delete-multiple-task", async (req, res) => {
+  const ids = req.body;
+  const deleteTasId = ids && ids.map((item) => item);
+  console.log(deleteTasId);
+  try {
+    const result = await taskModel.deleteMany({ _id: { $in: deleteTasId } });
+    res.status(200).json({ success: true, message: "Task deleted", result });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // Get one task
 app.get("/get-one/:id", async (req, res) => {
   const { id } = req.params;
