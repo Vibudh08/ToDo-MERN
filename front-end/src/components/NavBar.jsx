@@ -4,14 +4,14 @@ const NavBar = () => {
     <header className="bg-black shadow-md p-2">
       <div className=" mx-auto px-12 flex justify-between items-center">
         {/* Logo */}
-        <Link href="/">
+        <Link to="/">
           <img src="/todo_logo.png" className="w-16" alt="" />
         </Link>
 
         {/* Navigation */}
         <nav className="space-x-6">
           <Link
-            to="/"
+            to="/task-list"
             className="text-white hover:font-semibold text-xl transition"
           >
             List
