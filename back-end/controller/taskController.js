@@ -1,0 +1,80 @@
+import taskModel from "../model/tasks.js";
+
+export const getTask = async (req, res) => {
+  try {
+    const result = await taskModel.find();
+    res.status(200).json(result);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message });
+  }
+};
+
+export const postTask = async (req, res) => {
+  try {
+    const result = await taskModel.create(req.body);
+    res.status(201).json(result);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message });
+  }
+};
+
+export const deleteSingle = async (req, res) => {
+  const { id } = req.params;
+  try {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ error: "Invalid ID" });
+    }
+    const result = await taskModel.findByIdAndDelete(id);
+    res
+      .status(200)
+      .json({ success: true, message: "Task deleted", data: result });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message });
+  }
+};
+
+export const deleteMultiple = async (req, res) => {
+  const ids = req.body;
+  const deleteTasId = ids && ids.map((item) => item);
+  console.log(deleteTasId);
+  try {
+    const result = await taskModel.deleteMany({ _id: { $in: deleteTasId } });
+    res.status(200).json({ success: true, message: "Task deleted", result });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message });
+  }
+};
+
+export const getOne = async (req, res) => {
+  const { id } = req.params;
+  try {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ error: "Invalid ID" });
+    }
+    const result = await taskModel.findById(id);
+    res.status(200).json(result);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message });
+  }
+};
+
+export const updateTask = async (req, res) => {
+  const { id } = req.params;
+  try {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ error: "Invalid ID" });
+    }
+    const result = await taskModel.findByIdAndUpdate(id, req.body, {
+      new: true,
+    });
+    res.status(200).json(result);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message });
+  }
+};
