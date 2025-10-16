@@ -8,7 +8,7 @@ export const signup = async (req, res) => {
     if (result) {
       jwt.sign(userData, "Google", { expiresIn: "5d" }, (error, token) => {
         console.log(token);
-        res.status(200).json({ result, token }); 
+        res.status(200).json({ result, token });
       });
     }
   } catch (err) {
@@ -17,17 +17,20 @@ export const signup = async (req, res) => {
 };
 
 export const login = async (req, res) => {
-  const { email } = req.body;
+  const userData = req.body;
 
-  if (!email) {
-    return res.status(400).json({ error: "No email" });
+  if (!userData) {
+    return res.status(400).json({ error: "No data" });
   }
   try {
-    const result = await loginModel.findOne({ email: email });
+    const result = await loginModel.findOne({ email: userData.email });
     if (result) {
-      res.status(200).json("User Found");
+      jwt.sign(userData, "Google", { expiresIn: "5d" }, (error, token) => {
+        console.log(token);
+        res.status(200).json({ result, token });
+      });
     } else {
-      res.status(404).json("User Not Found");
+      res.status(404).json({ error: "User Not Found" });
     }
   } catch (err) {
     res.status(500).json({ error: err.message });

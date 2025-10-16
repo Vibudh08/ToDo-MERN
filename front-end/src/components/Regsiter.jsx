@@ -1,10 +1,13 @@
 import { useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const Regsiter = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
+  const navigate = useNavigate();
 
   const handleClick = async (e) => {
     e.preventDefault();
@@ -24,6 +27,14 @@ const Regsiter = () => {
     }
 
     setErrors({});
+    const data = { name, email, password };
+
+    const result = await axios.post("http://localhost:3400/signup", data);
+    if (result) {
+      navigate("/task-list");
+      const token = result.data.token;
+      document.cookie = "token=" + token;
+    }
   };
   return (
     <>

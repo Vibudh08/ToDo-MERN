@@ -1,9 +1,12 @@
 import { useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
+  const navigate = useNavigate();
   const handleClick = async (e) => {
     e.preventDefault();
 
@@ -17,7 +20,22 @@ const Login = () => {
     }
 
     setErrors({});
-    console.log(email, password);
+
+    const data = { email, password };
+    try {
+      const result = await axios.post("http://localhost:3400/login", data);
+      if (result) {
+        navigate("/task-list");
+        const token = result.data.token;
+        document.cookie = "token=" + token;
+      }
+    } catch (err) {
+      if (err.response) {
+        alert(err.response.data.error);
+      } else {
+        alert("Something went wrong");
+      }
+    }
   };
   return (
     <>
