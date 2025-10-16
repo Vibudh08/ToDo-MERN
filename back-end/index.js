@@ -10,6 +10,7 @@ import {
 import cors from "cors";
 import { connectionStr } from "./dbConnection.js";
 import mongoose from "mongoose";
+import { login, signup } from "./controller/loginController.js";
 mongoose.connect(connectionStr);
 
 const app = express();
@@ -33,5 +34,9 @@ app.get("/get-one/:id", getOne);
 
 // Update task
 app.put("/update-one/:id", updateTask);
+
+app.post("/signup", signup)
+
+app.post("/login", login);
 
 app.listen(3400, () => console.log("✅ Server running on port 3400"));
