@@ -10,15 +10,18 @@ import {
 import cors from "cors";
 import { connectionStr } from "./dbConnection.js";
 import mongoose from "mongoose";
+import cookieParser from "cookie-parser";
 import { login, signup } from "./controller/loginController.js";
+import { verifyJwtToken } from "./middleware/token.js";
 mongoose.connect(connectionStr);
 
 const app = express();
 app.use(express.json());
-app.use(cors());
+app.use(cors({ origin: "http://localhost:5173", credentials: true }));
+app.use(cookieParser());
 
 // Get all tasks
-app.get("/", getTask);
+app.get("/", verifyJwtToken, getTask);
 
 // Add task
 app.post("/add-task", postTask);
@@ -35,7 +38,7 @@ app.get("/get-one/:id", getOne);
 // Update task
 app.put("/update-one/:id", updateTask);
 
-app.post("/signup", signup)
+app.post("/signup", signup);
 
 app.post("/login", login);
 

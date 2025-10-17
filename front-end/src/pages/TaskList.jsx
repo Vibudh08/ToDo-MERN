@@ -11,7 +11,9 @@ const TaskList = () => {
 
   const getData = async () => {
     setLoading(true);
-    const result = await axios.get("http://localhost:3400/");
+    const result = await axios.get("http://localhost:3400/",{
+      withCredentials:'include'
+    });
     console.log(result);
     setDetails(result.data);
     setLoading(false);
