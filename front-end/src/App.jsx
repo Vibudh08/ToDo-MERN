@@ -3,20 +3,53 @@ import NavBar from "./components/NavBar";
 import TaskList from "./pages/TaskList";
 import AddTask from "./pages/AddTask";
 import Signup from "./pages/Signup";
+import ProtectedRoute from "./components/ProtectedRoute";
+import PublicRoute from "./components/PublicRoute";
 
 function App() {
   return (
-    <>
-      <BrowserRouter>
-        <NavBar />
-        <Routes>
-          <Route path="/" element={<Signup />} />
-          <Route path="/task-list" element={<TaskList />} />
-          <Route path="/add-task" element={<AddTask />} />
-          <Route path="/edit-task/:id" element={<AddTask />} />
-        </Routes>
-      </BrowserRouter>
-    </>
+    <BrowserRouter>
+      <NavBar />
+      <Routes>
+        {/* Public Route (Login/Signup) */}
+        <Route
+          path="/"
+          element={
+            <PublicRoute>
+              <Signup />
+            </PublicRoute>
+          }
+        />
+
+        {/* Protected Routes */}
+        <Route
+          path="/task-list"
+          element={
+            <ProtectedRoute>
+              <TaskList />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/add-task"
+          element={
+            <ProtectedRoute>
+              <AddTask />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/edit-task/:id"
+          element={
+            <ProtectedRoute>
+              <AddTask />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route path="*" element={<h1>No Path</h1>} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 

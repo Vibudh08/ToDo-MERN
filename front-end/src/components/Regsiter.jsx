@@ -49,7 +49,7 @@ const Regsiter = () => {
             type="text"
             placeholder="Enter Name"
             className={`w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-              errors.email ? "border-red-500" : ""
+              errors.name ? "border-red-500" : ""
             }`}
             onChange={(e) => setName(e.target.value)}
           />
@@ -83,7 +83,7 @@ const Regsiter = () => {
             type="password"
             placeholder="Enter Password"
             className={`w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-              errors.email ? "border-red-500" : ""
+              errors.password ? "border-red-500" : ""
             }`}
             onChange={(e) => setPassword(e.target.value)}
           />

@@ -25,6 +25,7 @@ const Login = () => {
     try {
       const result = await axios.post("http://localhost:3400/login", data);
       if (result) {
+        localStorage.setItem("login",email)
         navigate("/task-list");
         const token = result.data.token;
         document.cookie = "token=" + token;

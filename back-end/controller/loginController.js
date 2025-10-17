@@ -18,17 +18,19 @@ export const signup = async (req, res) => {
 
 export const login = async (req, res) => {
   const userData = req.body;
-
   if (!userData) {
     return res.status(400).json({ error: "No data" });
   }
   try {
     const result = await loginModel.findOne({ email: userData.email });
     if (result) {
-      jwt.sign(userData, "Google", { expiresIn: "5d" }, (error, token) => {
-        console.log(token);
-        res.status(200).json({ result, token });
-      });
+      if (result.password == userData.password) {
+        jwt.sign(userData, "Google", { expiresIn: "5d" }, (error, token) => {
+          res.status(200).json({ result, token });
+        });
+      } else {
+        res.status(404).json({ error: "Password is wrong" });
+      }
     } else {
       res.status(404).json({ error: "User Not Found" });
     }
