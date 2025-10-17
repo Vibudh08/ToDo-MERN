@@ -24,22 +24,24 @@ app.use(cookieParser());
 app.get("/", verifyJwtToken, getTask);
 
 // Add task
-app.post("/add-task", postTask);
+app.post("/add-task", verifyJwtToken, postTask);
 
 // Delete task
-app.delete("/delete-task/:id", deleteSingle);
+app.delete("/delete-task/:id", verifyJwtToken, deleteSingle);
 
 // Delete task
-app.delete("/delete-multiple-task", deleteMultiple);
+app.delete("/delete-multiple-task", verifyJwtToken, deleteMultiple);
 
 // Get one task
-app.get("/get-one/:id", getOne);
+app.get("/get-one/:id", verifyJwtToken, getOne);
 
 // Update task
-app.put("/update-one/:id", updateTask);
+app.put("/update-one/:id", verifyJwtToken, updateTask);
 
+// Signup
 app.post("/signup", signup);
 
+// Login
 app.post("/login", login);
 
 app.listen(3400, () => console.log("✅ Server running on port 3400"));

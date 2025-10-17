@@ -11,18 +11,19 @@ const AddTask = () => {
   const id = data.id;
   // console.log(id);
 
-  if(id){
-
+  if (id) {
     const getSingleData = async () => {
-      const result = await axios.get(`http://localhost:3400/get-one/${id}`);
+      const result = await axios.get(`http://localhost:3400/get-one/${id}`, {
+        withCredentials: "include",
+      });
       setTitle(result.data.title);
       setDesc(result.data.desc);
-  };
-  
-  useEffect(() => {
-    getSingleData();
-  }, [id]);
-}
+    };
+
+    useEffect(() => {
+      getSingleData();
+    }, [id]);
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -41,7 +42,10 @@ const AddTask = () => {
     if (id) {
       const data = await axios.put(
         `http://localhost:3400/update-one/${id}`,
-        taskData
+        taskData,
+        {
+          withCredentials: "include",
+        }
       );
       if (data) {
         alert("Task Updated");
@@ -49,7 +53,13 @@ const AddTask = () => {
         navigate("/");
       }
     } else {
-      const data = await axios.post("http://localhost:3400/add-task", taskData);
+      const data = await axios.post(
+        "http://localhost:3400/add-task",
+        taskData,
+        {
+          withCredentials: "include",
+        }
+      );
       if (data) {
         alert("Task Added");
         console.log(data);

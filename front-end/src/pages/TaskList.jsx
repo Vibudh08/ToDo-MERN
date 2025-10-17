@@ -11,8 +11,8 @@ const TaskList = () => {
 
   const getData = async () => {
     setLoading(true);
-    const result = await axios.get("http://localhost:3400/",{
-      withCredentials:'include'
+    const result = await axios.get("http://localhost:3400/", {
+      withCredentials: "include",
     });
     console.log(result);
     setDetails(result.data);
@@ -24,7 +24,10 @@ const TaskList = () => {
 
   const handleDelete = async (id) => {
     const result = await axios.delete(
-      `http://localhost:3400/delete-task/${id}`
+      `http://localhost:3400/delete-task/${id}`,
+      {
+        withCredentials: "include",
+      }
     );
     if (result) {
       getData();
@@ -52,7 +55,10 @@ const TaskList = () => {
   const handleDeleteButton = async () => {
     const result = await axios.delete(
       "http://localhost:3400/delete-multiple-task/",
-      { data: checkboxTask }
+      {
+        withCredentials: true,
+        data: checkboxTask,
+      }
     );
     if (result) {
       setCheckboxTask([]);
