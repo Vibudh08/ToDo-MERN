@@ -1,12 +1,22 @@
 import loginModel from "../model/login.js";
 import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
 
 export const signup = async (req, res) => {
   try {
-    const userData = req.body;
-    const result = await loginModel.create(userData);
+    const { name, email, password } = req.body;
+    const existing = await loginModel.findOne({ email: email });
+    if (existing) {
+      return res.status(400).json({ error: "User already exists" });
+    }
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const result = await loginModel.create({
+      name,
+      email,
+      password: hashedPassword,
+    });
     if (result) {
-      jwt.sign(userData, "Google", { expiresIn: "5d" }, (error, token) => {
+      jwt.sign(req.body, "Google", { expiresIn: "5d" }, (error, token) => {
         console.log(token);
         res.status(200).json({ result, token });
       });
@@ -24,7 +34,11 @@ export const login = async (req, res) => {
   try {
     const result = await loginModel.findOne({ email: userData.email });
     if (result) {
-      if (result.password == userData.password) {
+      const isMatch = await bcrypt.compare(userData.password, result.password);
+      if (!isMatch) {
+        return res.status(401).json({ error: "Invalid password" });
+      }
+      if (isMatch) {
         jwt.sign(userData, "Google", { expiresIn: "5d" }, (error, token) => {
           res.status(200).json({ result, token });
         });
