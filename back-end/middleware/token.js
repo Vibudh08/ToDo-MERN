@@ -1,13 +1,19 @@
 import jwt from "jsonwebtoken";
 
 export const verifyJwtToken = (req, res, next) => {
-//   console.log(req.cookies["token"]);
   const token = req.cookies["token"];
+
+  if (!token) {
+    return res.status(401).json({ msg: "No token provided", success: false });
+  }
+
   jwt.verify(token, "Google", (error, decoded) => {
     if (error) {
-      return res.send({ msg: "Invalid token", success: false });
+      return res
+        .status(401)
+        .json({ msg: "Invalid or expired token", success: false });
     }
-    console.log(decoded);
+    req.user = decoded;
     next();
   });
 };

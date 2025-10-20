@@ -1,5 +1,5 @@
 import { useState } from "react";
-import axios from "axios";
+import api from "./axiosInstance.jsx";
 import { useNavigate } from "react-router-dom";
 
 const Login = () => {
@@ -23,11 +23,13 @@ const Login = () => {
 
     const data = { email, password };
     try {
-      const result = await axios.post("http://localhost:3400/login", data);
+      const result = await api.post("http://localhost:3400/login", data);
       if (result) {
-        localStorage.setItem("login",email)
-        navigate("/task-list");
         const token = result.data.token;
+        localStorage.setItem("login", email);
+        console.log(token);
+
+        navigate("/task-list");
         document.cookie = "token=" + token;
       }
     } catch (err) {

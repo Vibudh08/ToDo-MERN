@@ -16,10 +16,15 @@ export const signup = async (req, res) => {
       password: hashedPassword,
     });
     if (result) {
-      jwt.sign(req.body, "Google", { expiresIn: "5d" }, (error, token) => {
-        console.log(token);
-        res.status(200).json({ result, token });
-      });
+      jwt.sign(
+        { id: result._id, email: result.email },
+        "Google",
+        { expiresIn: "5d" },
+        (error, token) => {
+          console.log(token);
+          res.status(200).json({ result, token });
+        }
+      );
     }
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -39,9 +44,14 @@ export const login = async (req, res) => {
         return res.status(401).json({ error: "Invalid password" });
       }
       if (isMatch) {
-        jwt.sign(userData, "Google", { expiresIn: "5d" }, (error, token) => {
-          res.status(200).json({ result, token });
-        });
+        jwt.sign(
+          { id: result._id, email: result.email },
+          "Google",
+          { expiresIn: "5d" },
+          (error, token) => {
+            res.status(200).json({ result, token });
+          }
+        );
       } else {
         res.status(404).json({ error: "Password is wrong" });
       }

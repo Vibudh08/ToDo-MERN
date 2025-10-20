@@ -1,5 +1,5 @@
 import { useState } from "react";
-import axios from "axios";
+import api from "./axiosInstance.jsx";
 import { useNavigate } from "react-router-dom";
 
 const Regsiter = () => {
@@ -29,10 +29,13 @@ const Regsiter = () => {
     setErrors({});
     const data = { name, email, password };
 
-    const result = await axios.post("http://localhost:3400/signup", data);
+    const result = await api.post("http://localhost:3400/signup", data);
     if (result) {
-      navigate("/task-list");
       const token = result.data.token;
+      localStorage.setItem("login", email);
+      console.log(token);
+
+      navigate("/task-list");
       document.cookie = "token=" + token;
     }
   };

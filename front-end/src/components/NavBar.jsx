@@ -3,9 +3,12 @@ import { useNavigate } from "react-router-dom";
 const NavBar = () => {
   const navigate = useNavigate();
   const handleLogout = () => {
+    // Delete cookie by setting expiry to past date
+    document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
     localStorage.removeItem("login");
     navigate("/");
   };
+
   const data = localStorage.getItem("login");
   return (
     <header className="bg-black shadow-md p-2">

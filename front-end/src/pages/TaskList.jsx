@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../components/axiosInstance.jsx";
 import { Pencil, Trash2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
@@ -11,7 +11,7 @@ const TaskList = () => {
 
   const getData = async () => {
     setLoading(true);
-    const result = await axios.get("http://localhost:3400/", {
+    const result = await api.get("http://localhost:3400/", {
       withCredentials: "include",
     });
     console.log(result);
@@ -23,12 +23,9 @@ const TaskList = () => {
   }, []);
 
   const handleDelete = async (id) => {
-    const result = await axios.delete(
-      `http://localhost:3400/delete-task/${id}`,
-      {
-        withCredentials: "include",
-      }
-    );
+    const result = await api.delete(`http://localhost:3400/delete-task/${id}`, {
+      withCredentials: "include",
+    });
     if (result) {
       getData();
     }
@@ -53,7 +50,7 @@ const TaskList = () => {
   };
 
   const handleDeleteButton = async () => {
-    const result = await axios.delete(
+    const result = await api.delete(
       "http://localhost:3400/delete-multiple-task/",
       {
         withCredentials: true,
@@ -102,6 +99,9 @@ const TaskList = () => {
                 </th>
                 <th className="p-4 border-b">S.No.</th>
                 <th className="p-4 border-b">Title</th>
+                <th className="p-4 border-b">Priority</th>
+                <th className="p-4 border-b text-center">Completed</th>
+                <th className="p-4 border-b">Image</th>
                 <th className="p-4 border-b">Description</th>
                 <th className="p-4 border-b rounded-tr-2xl text-center">
                   Actions
@@ -138,6 +138,15 @@ const TaskList = () => {
                     <td className="p-4 border-b text-gray-600">{index + 1}</td>
                     <td className="p-4 border-b font-medium text-gray-800">
                       {item.title}
+                    </td>
+                    <td className="p-4 border-b font-medium text-gray-800">
+                      <div className="border p-1">High</div>
+                    </td>
+                    <td className="p-4 border-b font-medium text-center text-gray-800">
+                      <input type="checkbox" />
+                    </td>
+                    <td className="p-4 border-b font-medium text-gray-800">
+                      <img src="/todo_logo.png" className="w-10" alt="" />
                     </td>
                     <td className="p-4 border-b text-gray-600">{item.desc}</td>
                     <td className="p-4 border-b text-center">
