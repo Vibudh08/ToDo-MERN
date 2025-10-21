@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import taskModel from "../model/tasks.js";
-
+import fs from "fs";
+import path from "path";
 
 export const getTask = async (req, res) => {
   try {
@@ -14,17 +15,34 @@ export const getTask = async (req, res) => {
 
 export const postTask = async (req, res) => {
   try {
-    const result = await taskModel.create(req.body);
-    res.status(201).json(result);
+    const { title, desc, priority, completed } = req.body;
+    const image = req.file.filename;
+
+    const task = await taskModel.create({
+      title,
+      desc,
+      priority,
+      completed,
+      image,
+    });
+    res.json({ success: true, task });
   } catch (err) {
-    console.error(err);
     res.status(500).json({ error: err.message });
   }
 };
 
 export const deleteSingle = async (req, res) => {
   const { id } = req.params;
+
   try {
+    const task = await taskModel.findById(id);
+    if (task.image) {
+      const imagePath = path.join("uploads", task.image);
+      fs.unlink(imagePath, (err) => {
+        if (err) console.error("Error deleting image:", err);
+      });
+    }
+
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).json({ error: "Invalid ID" });
     }
