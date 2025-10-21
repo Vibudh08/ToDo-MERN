@@ -6,14 +6,13 @@ const AddTask = () => {
   const [title, setTitle] = useState("");
   const [desc, setDesc] = useState("");
   const [priority, setPriority] = useState("");
-  const [done, setDone] = useState();
-  const [image, setImage] = useState();
+  const [completed, setcompleted] = useState();
+  const [image, setImage] = useState(null);
   const [preview, setPreview] = useState("");
   const [errors, setErrors] = useState([]);
   const navigate = useNavigate();
   const data = useParams();
   const id = data.id;
-  // console.log(id);
 
   if (id) {
     const getSingleData = async () => {
@@ -22,6 +21,10 @@ const AddTask = () => {
       });
       setTitle(result.data.title);
       setDesc(result.data.desc);
+      setImage(result.data.image);
+      setPriority(result.data.priority);
+      setcompleted(result.data.completed);
+      // console.log(result);
     };
 
     useEffect(() => {
@@ -30,10 +33,18 @@ const AddTask = () => {
   }
 
   const handleImageChange = (e) => {
-    const files = e.target.files[0];
-    setImage(files);
-    setPreview(URL.createObjectURL(files));
-    console.log(image);
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const allowedTypes = ["image/jpeg", "image/png", "image/jpg"];
+    if (!allowedTypes.includes(file.type)) {
+      alert("Only JPG, JPEG, or PNG files are allowed");
+      e.target.value = null; // reset input
+      return;
+    }
+
+    setImage(file);
+    setPreview(URL.createObjectURL(file));
   };
 
   const handleSubmit = async (e) => {
@@ -50,28 +61,35 @@ const AddTask = () => {
     }
     setErrors({});
 
-    const taskData = { title, desc };
+    const formData = new FormData();
+    formData.append("title", title);
+    formData.append("desc", desc);
+    formData.append("priority", priority);
+    formData.append("completed", completed ? true : false);
+    formData.append("image", image);
 
     if (id) {
       const data = await api.put(
         `http://localhost:3400/update-one/${id}`,
-        taskData,
+        formData,
         {
           withCredentials: "include",
+          headers: { "Content-Type": "multipart/form-data" },
         }
       );
       if (data) {
         alert("Task Updated");
-        console.log(data);
+        // console.log(data);
         navigate("/");
       }
     } else {
-      const data = await api.post("http://localhost:3400/add-task", taskData, {
+      const data = await api.post("http://localhost:3400/add-task", formData, {
         withCredentials: "include",
+        headers: { "Content-Type": "multipart/form-data" },
       });
       if (data) {
         alert("Task Added");
-        console.log(data);
+        // console.log(data);
         navigate("/");
       }
     }
@@ -116,9 +134,9 @@ const AddTask = () => {
                 onChange={(e) => setPriority(e.target.value)}
               >
                 <option>Select Priority</option>
-                <option value="low">Low</option>
-                <option value="medium">Medium</option>
-                <option value="high">High</option>
+                <option value="Low">Low</option>
+                <option value="Medium">Medium</option>
+                <option value="High">High</option>
               </select>
             </div>
             {errors.priority && (
@@ -132,8 +150,8 @@ const AddTask = () => {
             </label>
             <input
               type="checkbox"
-              checked={done}
-              onChange={(e) => setDone(e.target.checked)}
+              checked={completed}
+              onChange={(e) => setcompleted(e.target.checked)}
               className="cursor-pointer"
             />
           </div>
@@ -149,13 +167,19 @@ const AddTask = () => {
                 className="w-fit px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-50 cursor-pointer"
               />
             </div>
-            {preview && (
+            {preview ? (
               <img
                 src={preview}
                 alt="Preview"
                 className="w-30 h-30 object-cover rounded-lg shadow-md"
               />
-            )}
+            ) : image ? (
+              <img
+                src={`http://localhost:3400/uploads/${image}`}
+                alt="Current"
+                className="w-30 h-30 object-cover rounded-lg shadow-md"
+              />
+            ) : null}
             {errors.image && (
               <p className="text-red-500 text-sm mt-1">{errors.image}</p>
             )}

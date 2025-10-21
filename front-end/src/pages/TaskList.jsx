@@ -9,12 +9,18 @@ const TaskList = () => {
   const [checkboxTask, setCheckboxTask] = useState([]);
   const navigate = useNavigate();
 
+  const priorityColors = {
+    Low: "border-green-400 bg-green-50 text-green-700",
+    Medium: "border-orange-400 bg-orange-50 text-orange-700",
+    High: "border-red-400 bg-red-50 text-red-700",
+  };
+
   const getData = async () => {
     setLoading(true);
     const result = await api.get("http://localhost:3400/", {
       withCredentials: "include",
     });
-    console.log(result);
+    // console.log(result);
     setDetails(result.data);
     setLoading(false);
   };
@@ -100,7 +106,7 @@ const TaskList = () => {
                 <th className="p-4 border-b">S.No.</th>
                 <th className="p-4 border-b">Title</th>
                 <th className="p-4 border-b">Priority</th>
-                <th className="p-4 border-b text-center">Completed</th>
+                <th className="p-4 border-b">Completed</th>
                 <th className="p-4 border-b">Image</th>
                 <th className="p-4 border-b">Description</th>
                 <th className="p-4 border-b rounded-tr-2xl text-center">
@@ -139,14 +145,25 @@ const TaskList = () => {
                     <td className="p-4 border-b font-medium text-gray-800">
                       {item.title}
                     </td>
-                    <td className="p-4 border-b font-medium text-gray-800">
-                      <div className="border p-1">High</div>
+                    <td className="p-4 border-b   text-gray-800">
+                      <div
+                        className={`border p-1 px-2 text-xs w-fit rounded-[5px] ${
+                          priorityColors[item.priority] ||
+                          "border-gray-300 bg-gray-50 text-gray-700"
+                        }`}
+                      >
+                        {item.priority}
+                      </div>
                     </td>
-                    <td className="p-4 border-b font-medium text-center text-gray-800">
-                      <input type="checkbox" />
+                    <td className="p-4 border-b font-medium  text-gray-800">
+                      {item.completed == true ? "Yes" : "No"}
                     </td>
                     <td className="p-4 border-b font-medium text-gray-800">
-                      <img src="/todo_logo.png" className="w-10" alt="" />
+                      <img
+                        src={`http://localhost:3400/uploads/${item.image}`}
+                        className="w-10"
+                        alt=""
+                      />
                     </td>
                     <td className="p-4 border-b text-gray-600">{item.desc}</td>
                     <td className="p-4 border-b text-center">
